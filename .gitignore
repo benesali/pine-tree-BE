@@ -1,0 +1,76 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# =========================
+# Virtual environments
+# =========================
+.venv/
+
+# =========================
+# Environment variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+
+# =========================
+# Database
+# =========================
+*.sqlite3
+*.db
+*.sql
+
+# =========================
+# Alembic
+# =========================
+alembic/versions/*.pyc
+alembic/versions/__pycache__/
+
+# =========================
+# Pre-commit
+# =========================
+.pre-commit-cache/
+
+# =========================
+# IDE / Editors
+# =========================
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+
+.idea/
+*.iml
+
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Coverage / Reports
+# =========================
+.coverage
+htmlcov/
+
+# =========================
+# Temporary / Backup files
+# =========================
+*.swp
+*.bak
+*.tmp
