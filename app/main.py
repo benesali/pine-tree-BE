@@ -1,8 +1,11 @@
 # app/main.py
+from dotenv import load_dotenv
 from fastapi import FastAPI
 
 from app.api import apartments, auth, availability
 from app.api.admin.calendar import router as admin_calendar_router
+
+load_dotenv()
 
 app = FastAPI(title="Pine Rent API")
 

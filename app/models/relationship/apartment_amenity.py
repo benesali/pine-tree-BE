@@ -2,7 +2,7 @@
 # M:N association table for Apartment and Amenity entities
 from sqlalchemy import Column, ForeignKey, Integer, Table
 
-from app.db.base import Base
+from app.db.session import Base
 
 apartment_amenities = Table(
     "apartment_amenities",

@@ -6,7 +6,7 @@ from datetime import date, datetime
 from sqlalchemy import Date, DateTime, Enum, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.base import Base
+from app.db.session import Base
 
 
 class AvailabilityStatus(enum.Enum):

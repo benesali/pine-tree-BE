@@ -4,7 +4,7 @@ from enum import Enum
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.db.base import Base
+from app.db.session import Base
 
 
 class ReservationStatus(str, Enum):

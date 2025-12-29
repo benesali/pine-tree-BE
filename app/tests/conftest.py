@@ -14,8 +14,10 @@ os.environ.setdefault("DATABASE_URL", "sqlite:///./test.db")
 
 from unittest.mock import Mock
 
-from app.db.base import Base  # ← SPRÁVNÝ IMPORT
-from app.db.session import get_db
+from app.db.session import (
+    Base,  # ← SPRÁVNÝ IMPORT
+    get_db,
+)
 from app.main import app
 
 # Shared fixtures for module-based test organization
