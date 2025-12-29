@@ -1,8 +1,11 @@
 # app/models/admin_user.py
 from datetime import datetime
-from sqlalchemy import String, Boolean, DateTime
+
+from sqlalchemy import Boolean, DateTime, String
 from sqlalchemy.orm import Mapped, mapped_column
+
 from app.db.base import Base
+
 
 class AdminUser(Base):
     __tablename__ = "admin_users"
