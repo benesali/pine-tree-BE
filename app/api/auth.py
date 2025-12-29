@@ -6,8 +6,10 @@ from app.db.session import get_db
 from app.models.admin_user import AdminUser
 from app.schemas.auth import AdminLoginRequest, AdminLoginResponse
 
-router = APIRouter(tags=["auth"])
-
+router = APIRouter(
+    prefix="/auth",
+    tags=["auth"],
+)
 
 @router.post(
     "/login",
