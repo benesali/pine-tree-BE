@@ -91,7 +91,7 @@ class CalendarService:
 
         self.db.commit()
 
-    def clear_range(self, apartment_id: int, date_from: date, date_to: date) -> None:
+    def clear_range(self, apartment_id: int, date_from: date, date_to: date) -> int:
         """Remove availability entries for the given date range.
 
         Args:
@@ -102,13 +102,22 @@ class CalendarService:
         Returns:
             None
         """
-        (
+        deleted = (
             self.db.query(Availability)
             .filter(
                 Availability.apartment_id == apartment_id,
                 Availability.date >= date_from,
                 Availability.date <= date_to,
+                Availability.status.in_(
+                    [
+                        AvailabilityStatus.blocked,
+                        AvailabilityStatus.reserved,
+                        AvailabilityStatus.booked,
+                    ]
+                ),
             )
             .delete(synchronize_session=False)
         )
+
         self.db.commit()
+        return deleted

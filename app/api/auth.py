@@ -7,9 +7,9 @@ from app.models.admin_user import AdminUser
 from app.schemas.auth import AdminLoginRequest, AdminLoginResponse
 
 router = APIRouter(
-    prefix="/auth",
     tags=["auth"],
 )
+
 
 @router.post(
     "/login",
@@ -36,7 +36,13 @@ def login(
     if not user or not verify_password(data.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    token = create_access_token({"sub": str(user.id)})
+    token = create_access_token(subject=str(user.id))
+
+    print("LOGIN DATA:", data.email)
+    print("USER FOUND:", bool(user))
+    from app.core.config import settings
+
+    print("DATABASE_URL:", settings.DATABASE_URL)
 
     return {
         "access_token": token,

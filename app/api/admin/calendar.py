@@ -7,7 +7,7 @@ from app.models.availability import AvailabilityStatus
 from app.schemas.calendar import CalendarActionResponse, CalendarRangeRequest
 from app.services.calendar import CalendarService
 
-router = APIRouter(prefix="/admin/calendar", tags=["admin-calendar"])
+router = APIRouter()
 
 
 @router.post("/block", response_model=CalendarActionResponse)
@@ -45,3 +45,17 @@ def block_range(
         ) from None
 
     return {"status": "blocked"}
+
+
+@router.post("/clear", response_model=CalendarActionResponse)
+def clear_range(
+    data: CalendarRangeRequest,
+    _: str = Depends(admin_required),
+    db: Session = Depends(get_db),
+):
+    CalendarService(db).clear_range(
+        data.apartment_id,
+        data.date_from,
+        data.date_to,
+    )
+    return {"status": "cleared"}

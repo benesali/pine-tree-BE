@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.models.availability import Availability
+from app.models.availability import Availability, AvailabilityStatus
 from app.schemas.availability import AvailabilityDay
 
 router = APIRouter(tags=["availability"])
@@ -37,6 +37,13 @@ def get_availability(
             Availability.apartment_id == apartment_id,
             Availability.date >= from_date,
             Availability.date <= to_date,
+            Availability.status.in_(
+                [
+                    AvailabilityStatus.booked,
+                    AvailabilityStatus.blocked,
+                    AvailabilityStatus.reserved,
+                ]
+            ),
         )
         .all()
     )

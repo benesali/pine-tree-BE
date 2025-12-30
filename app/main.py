@@ -9,23 +9,35 @@ load_dotenv()
 
 app = FastAPI(title="Pine Rent API")
 
-app.include_router(auth.router, prefix="/auth", tags=["auth"])
-app.include_router(apartments.router, prefix="/apartments", tags=["apartments"])
-app.include_router(availability.router, prefix="/apartments", tags=["availability"])
-app.include_router(admin_calendar_router)
+# Auth (PUBLIC)
+app.include_router(
+    auth.router,
+    prefix="/api/auth",
+    tags=["auth"],
+)
 
-# app.include_router(subscriptions.router, prefix="/subscriptions",
-# tags=["subscriptions"])
+# Apartments (PUBLIC)
+app.include_router(
+    apartments.router,
+    prefix="/api/apartments",
+    tags=["apartments"],
+)
+
+# Availability (PUBLIC)
+app.include_router(
+    availability.router,
+    prefix="/api/availability",
+    tags=["availability"],
+)
+
+# Admin calendar (PROTECTED)
+app.include_router(
+    admin_calendar_router,
+    prefix="/api/admin/calendar",
+    tags=["admin"],
+)
 
 
 @app.get("/health")
 def health():
-    """Health check endpoint.
-
-    Returns a simple JSON payload indicating the service is up. Useful for
-    liveness probes and basic monitoring.
-
-    Returns:
-        dict: A status object with a single key `status` set to `ok`.
-    """
     return {"status": "ok"}
