@@ -1,6 +1,6 @@
 from datetime import date
 
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, EmailStr, model_validator
 
 
 # admin calendar management
@@ -33,3 +33,23 @@ class CalendarRangeRequest(BaseModel):
 
 class CalendarActionResponse(BaseModel):
     status: str
+
+
+class CustomerInput(BaseModel):
+    name: str
+    email: EmailStr
+    email2: EmailStr | None = None
+    phone: str | None = None
+    phone2: str | None = None
+    adults: int
+    children_ages: list[int] | None = None
+    extra_bed: bool
+    note: str | None = None
+    dogs: int
+
+
+class CalendarReserveRequest(BaseModel):
+    apartment_id: int
+    date_from: date
+    date_to: date
+    customer: CustomerInput

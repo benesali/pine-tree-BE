@@ -3,8 +3,12 @@ from sqlalchemy.orm import Session
 
 from app.api.security_dependency import admin_required
 from app.db.session import get_db
-from app.models.availability import AvailabilityStatus
-from app.schemas.calendar import CalendarActionResponse, CalendarRangeRequest
+from app.models.reservation import ReservationStatus
+from app.schemas.calendar import (
+    CalendarActionResponse,
+    CalendarRangeRequest,
+    CalendarReserveRequest,
+)
 from app.services.calendar import CalendarService
 
 router = APIRouter()
@@ -16,27 +20,22 @@ def block_range(
     _: str = Depends(admin_required),
     db: Session = Depends(get_db),
 ):
-    """Block a date range for the specified apartment.
+    """
+    Block a date range for the specified apartment.
 
-    Args:
-        data: `CalendarRangeRequest` containing `apartment_id`, `date_from`,
-            `date_to`, and `note`.
-        _: Unused admin id (value returned by `admin_required`).
-        db: SQLAlchemy session provided by the `get_db` dependency.
-
-    Returns:
-        A dict with the action status (e.g., `{"status": "blocked"}`).
+    Creates a BLOCKED reservation and generates availability records
+    for each day in the range.
 
     Raises:
-        HTTPException: 409 when the requested range contains an already-booked day.
+        HTTPException(409): If the range contains already booked days.
     """
     try:
         CalendarService(db).set_range(
-            data.apartment_id,
-            data.date_from,
-            data.date_to,
-            AvailabilityStatus.blocked,
-            data.note,
+            apartment_id=data.apartment_id,
+            date_from=data.date_from,
+            date_to=data.date_to,
+            status=ReservationStatus.BLOCKED,
+            note=data.note,
         )
     except ValueError as e:
         raise HTTPException(
@@ -53,9 +52,53 @@ def clear_range(
     _: str = Depends(admin_required),
     db: Session = Depends(get_db),
 ):
+    """
+    Remove all reservations intersecting the given date range.
+    """
     CalendarService(db).clear_range(
-        data.apartment_id,
-        data.date_from,
-        data.date_to,
+        apartment_id=data.apartment_id,
+        date_from=data.date_from,
+        date_to=data.date_to,
     )
+
     return {"status": "cleared"}
+
+
+@router.post("/reserve", response_model=CalendarActionResponse)
+def reserve_range(
+    data: CalendarReserveRequest,
+    _: str = Depends(admin_required),
+    db: Session = Depends(get_db),
+):
+    try:
+        CalendarService(db).set_range(
+            apartment_id=data.apartment_id,
+            date_from=data.date_from,
+            date_to=data.date_to,
+            status=ReservationStatus.RESERVED,
+            customer_data=data.customer,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=409, detail=str(e)) from None
+
+    return {"status": "reserved"}
+
+
+@router.post("/book", response_model=CalendarActionResponse)
+def book_range(
+    data: CalendarReserveRequest,
+    _: str = Depends(admin_required),
+    db: Session = Depends(get_db),
+):
+    try:
+        CalendarService(db).set_range(
+            apartment_id=data.apartment_id,
+            date_from=data.date_from,
+            date_to=data.date_to,
+            status=ReservationStatus.BOOKED,
+            customer_data=data.customer,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=409, detail=str(e)) from None
+
+    return {"status": "booked"}

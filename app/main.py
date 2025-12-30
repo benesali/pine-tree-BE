@@ -2,7 +2,7 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI
 
-from app.api import apartments, auth, availability
+from app.api import apartments, auth, availability, buildings
 from app.api.admin.calendar import router as admin_calendar_router
 
 load_dotenv()
@@ -35,6 +35,12 @@ app.include_router(
     admin_calendar_router,
     prefix="/api/admin/calendar",
     tags=["admin"],
+)
+# Buildings (PUBLIC)
+app.include_router(
+    buildings.router,
+    prefix="/api/buildings",
+    tags=["buildings"],
 )
 
 

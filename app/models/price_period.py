@@ -1,4 +1,8 @@
-from sqlalchemy.orm import ForeignKey, Mapped, date, mapped_column, relationship
+from datetime import date
+from decimal import Decimal
+
+from sqlalchemy import ForeignKey, Numeric
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
 
@@ -17,7 +21,7 @@ class ApartmentPricePeriod(Base):
     date_from: Mapped[date]
     date_to: Mapped[date]
 
-    price_per_night: Mapped[int]  # nebo Decimal
+    price_per_night: Mapped[Decimal] = mapped_column(Numeric(10, 2))
 
     label: Mapped[str | None]  # "High season", "Low season"
 

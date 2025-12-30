@@ -1,7 +1,6 @@
 # app/models/apartment.py
-from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, String
+from sqlalchemy import Boolean, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.session import Base
@@ -17,18 +16,17 @@ class Apartment(Base):
     __tablename__ = "apartments"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    building_id: Mapped[int] = mapped_column(ForeignKey("buildings.id"), index=True)
 
     slug: Mapped[str] = mapped_column(String(100), unique=True, index=True)
     name: Mapped[str] = mapped_column(String(255))
-    location: Mapped[str] = mapped_column(String(255))
     description: Mapped[str | None]
 
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    guests: Mapped[int]
+    bedrooms: Mapped[int]
+    bathrooms: Mapped[int]
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[datetime | None] = mapped_column(
-        DateTime, onupdate=datetime.utcnow
-    )
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
     # 🔹 Rezervace (business objekt)
     reservations = relationship(
@@ -63,6 +61,8 @@ class Apartment(Base):
         back_populates="apartment",
         cascade="all, delete-orphan",
     )
+
+    building = relationship("Building", back_populates="apartments")
 
     def __repr__(self) -> str:  # pragma: no cover
         return f"<Apartment id={self.id} slug={self.slug!r}>"

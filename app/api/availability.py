@@ -1,10 +1,10 @@
 from datetime import date
 
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.db.session import get_db
-from app.models.availability import Availability, AvailabilityStatus
+from app.models.availability import Availability
 from app.schemas.availability import AvailabilityDay
 
 router = APIRouter(tags=["availability"])
@@ -31,24 +31,24 @@ def get_availability(
     Returns:
         list[Availability]: A list of `Availability` rows that match the range.
     """
+
     records = (
         db.query(Availability)
+        .join(Availability.reservation)
+        .options(joinedload(Availability.reservation))
         .filter(
             Availability.apartment_id == apartment_id,
             Availability.date >= from_date,
             Availability.date <= to_date,
-            Availability.status.in_(
-                [
-                    AvailabilityStatus.booked,
-                    AvailabilityStatus.blocked,
-                    AvailabilityStatus.reserved,
-                ]
-            ),
         )
         .all()
     )
 
-    # FastAPI + Pydantic:
-    # - vezme SQLAlchemy objekty
-    # - vytáhne jen pole definované ve schema
-    return records
+    return [
+        {
+            "date": av.date,
+            "status": av.reservation.status,
+            "reservation_id": av.reservation.id,
+        }
+        for av in records
+    ]

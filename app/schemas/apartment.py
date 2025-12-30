@@ -1,17 +1,20 @@
-"""Pydantic schemas for apartment responses."""
-
 from pydantic import BaseModel
 
 
-class ApartmentListItem(BaseModel):
-    """Minimal apartment representation for lists."""
-
+class ApartmentBase(BaseModel):
     id: int
+    slug: str
     name: str
-    location: str
-
-
-class ApartmentDetail(ApartmentListItem):
-    """Detailed apartment representation."""
-
     description: str | None
+    buildingSlug: str
+    price: float
+    guests: int
+    bedrooms: int
+    bathrooms: int
+    image: str
+    images: list[str]
+    amenities: list[str]
+    available: bool
+
+    class Config:
+        from_attributes = True

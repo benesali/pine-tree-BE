@@ -41,6 +41,8 @@ class Reservation(Base):
         nullable=False,
     )
 
+    note: Mapped[str | None] = mapped_column(nullable=True)
+
     # 🔹 relationships
     apartment = relationship(
         "Apartment",

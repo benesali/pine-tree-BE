@@ -4,11 +4,12 @@ from datetime import date
 
 from pydantic import BaseModel
 
-from app.models.availability import AvailabilityStatus
+from app.models.reservation import ReservationStatus
 
 
 class AvailabilityDay(BaseModel):
     """A single day availability payload for the calendar UI."""
 
     date: date
-    status: AvailabilityStatus
+    status: ReservationStatus
+    reservation_id: int | None
