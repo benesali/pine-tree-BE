@@ -30,6 +30,10 @@ class ApartmentInBuilding(BaseModel):
     bathrooms: int
     priceFrom: float
     available: bool
+    building_slug: str
+
+    class Config:
+        populate_by_name = True
 
 
 class BuildingDetail(BaseModel):

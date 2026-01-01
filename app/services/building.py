@@ -65,6 +65,7 @@ class BuildingService:
                 bathrooms=a.bathrooms,
                 priceFrom=120.0,
                 available=True,
+                building_slug=building.slug,
             )
             for a in building.apartments
             if a.is_active
